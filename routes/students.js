@@ -12,6 +12,17 @@ router.get('/', (req, res)=>{
    });
 });
 
+router.get('/totals', (req, res)=>{
+  Student.getTotals()
+   .then(totals =>{
+      res.send(totals);
+   })
+   .catch(err=>{
+      res.status(400).send(err);
+   });
+});
+
+
 router.get('/:id', (req, res) => {
   Student.getOne(req.params.id)
     .then(student => {
@@ -56,15 +67,6 @@ router.delete('/:id',(req, res)=>{
    });
 });
 
-// router.get('/totals', (req, res)=>{
-//   Student.getTotals()
-//    .then(totals =>{
-//       res.send(totals);
-//    })
-//    .catch(err=>{
-//       res.status(400).send(err);
-//    });
-// });
 
 
 

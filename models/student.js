@@ -106,19 +106,19 @@ exports.delete = function(id){
   });
 };
 
-// exports.getTotals = function(){
-//   return new Promise((resolve, reject)=>{
-//     let sql = select sum()
+exports.getTotals = function(){
+  return new Promise((resolve, reject)=>{
+    let sql = select sum(total), sum(score) as Total, Score from student;
 
-//     connection.query(sql, (err, students)=>{
-//       if(err){
-//         reject(err);
-//       }else{
-//         resolve(students);
-//       }
-//     });
-//   });
-// };
+    connection.query(sql, (err, students)=>{
+      if(err){
+        reject(err);
+      }else{
+        resolve(students);
+      }
+    });
+  });
+};
 
 
 

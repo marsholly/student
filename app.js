@@ -25,10 +25,10 @@ app.use('/', students);
 
 
 app.get('/',(req, res, next)=>{
-   Student.getAll(function(err, students){
-    res.render('index',{title: "Student Assigmnents", students});
-  });  
-})
+  Student.getAll(function(err, data){
+    res.render('index', {title: "Message Board App", data});
+  });
+});
 
 
 app.listen(PORT, err=>{
