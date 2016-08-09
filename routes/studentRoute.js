@@ -1,10 +1,15 @@
+"use strict";
 const express = require('express');
 const router = express.Router();
 const Student = require('../models/student');
 
+// /studentRoute
+// studentRoute.js
+
 router.get('/', (req, res)=>{
   Student.getAll()
    .then(students =>{
+      console.log(students);
       res.send(students);
    })
    .catch(err=>{
@@ -14,12 +19,12 @@ router.get('/', (req, res)=>{
 
 router.get('/totals', (req, res)=>{
   Student.getTotals()
-   .then(totals =>{
-      res.send(totals);
-   })
-   .catch(err=>{
-      res.status(400).send(err);
-   });
+     .then(obj =>{
+        res.send(obj);
+     })
+     .catch(err=>{
+        res.status(400).send(err);
+     });
 });
 
 
@@ -50,7 +55,7 @@ router.put('/:id', (req, res)=>{
       return Student.getOne(req.params.id);
    })
    .then(student=>{
-      res.send(student);   //newa from A.getOne
+      res.send(student);  
    })
    .catch(err=>{
       res.status(400).send(err);

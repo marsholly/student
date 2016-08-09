@@ -13,7 +13,7 @@ $(()=>{
   });
 
   $('.sendMsg').on('click',addInfos);
-  $('table').on('click','.delete', deleteInfo);
+  $('table').on('click','.delete', deleteStudent);
   $('table').on('click','.edit', openEditModal);
   $('.sendEditMsg').on('click', updateInfo);
 });
@@ -21,22 +21,25 @@ $(()=>{
 
 function addInfos(event){
   event.preventDefault();
-  let newInfos ={
+  let newStudents ={
     name: $('#messageModal').find('.name').val(),
-    message:$('#messageModal').find('.message-text').val()
+    total:$('#messageModal').find('.total').val(),
+    score:$('#messageModal').find('.score').val(),
   };
   $('#messageModal').find('.name').val('');
-  $('#messageModal').find('.message-text').val('');
-   $.post(`/infos`,newInfos)
+  $('#messageModal').find('.total').val('');
+  $('#messageModal').find('.score').val('');
+   $.post(`/studentRoute`,newStudents)
     .done(()=>{
       renderList();
       $('#newClose').click();
     })
 }
 
-function deleteInfo(){
-  let infoId = $(this).closest('tr').data('id');
-  $.ajax(`/infos/${infoId}`,{
+function deleteStudent(){
+  console.log('here!!!')
+  let studentId = $(this).closest('tr').data('id');
+  $.ajax(`/studentRoute/${studentId}`,{
       method: 'DELETE'
   })
    .done(()=>{
@@ -51,26 +54,30 @@ function openEditModal(){
   let $row = $(this).closest('tr');
   let $editModal = $('#editMsgModal');
 
-  let infoId = $row.data('id');
-  $editModal.data('infoId', infoId);   //give id to modal
+  let studentId = $row.data('id');
+  $editModal.data('studentId', studentId);   //give id to modal
   
   let name = $row.find('.name').text();
   $editModal.find('.name').val(name);
    
-  let message = $row.find('.message').text();
-  $editModal.find('.message-text').val(message);
+  let total = $row.find('.total').text();
+  $editModal.find('.total').val(total);
+
+  let score = $row.find('.score').text();
+  $editModal.find('.score').val(score);
 }
 
 function updateInfo(event){
   let $editModal = $('#editMsgModal');
-  let id = $('#editMsgModal').data('infoId');
+  let id = $('#editMsgModal').data('studentId');
   
   $.ajax({
-    url:`/infos/${id}`,
+    url:`/studentRoute/${id}`,
     type: 'PUT',
     data:{
       name: $editModal.find('.name').val(),
-      message: $editModal.find('.message-text').val()
+      total: $editModal.find('.total').val(),
+      score: $editModal.find('.score').val()
     },
     success:function(data){ 
       renderList();
@@ -80,18 +87,30 @@ function updateInfo(event){
 }
 
 function renderList(){
-  $.get('/infos')
-   .done(infos=>{
-      let $trs = infos.map(info=>{
+  $.get('/studentRoute')
+   .done(students=>{
+      let $trs = students.map(student=>{
         let $tr = $('#template').clone();
         $tr.removeAttr('id');
-        $tr.find('.name').text(info.name);
-        $tr.find('.message').text(info.message);
-        $tr.find('.time').text(info.time);
-        $tr.data('id', info.id); 
+        $tr.find('.name').text(student.name);
+        $tr.find('.total').text(student.total);
+        $tr.find('.score').text(student.score);
+        $tr.find('.grade').text(student.grade);
+        $tr.data('id', student.id); 
         return $tr;
       });
-      $('#messageList').empty().append($trs);
+      $('#studentList').empty().append($trs);
    })
+  $.get('/studentRoute/totals')
+   .done(obj=>{
+      $('.sumTotal').text(obj.total_possible);
+      $('.sumScore').text(obj.total_score);
+      let grades = obj.grade;
+      let output ='';
+      for(let result in grades){
+        output += result+': '+ grades[result] +'; ';
+      }
+      $('.sumGrade').text(output);
+   });
 }
 

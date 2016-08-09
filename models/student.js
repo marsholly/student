@@ -18,10 +18,11 @@ exports.getAll = function(){
     let sql = squel.select()
                    .from('student')
                    .toString();
-    connection.query(sql, (err, students)=>{
+    connection.query(sql, function(err, students){
       if(err){
         reject(err);
       }else{
+        students = students.map(student=>grade(student));
         resolve(students);
       }
     });
@@ -43,6 +44,7 @@ exports.getOne = function(id) {
       } else if(!student) {
         reject({error: 'student not found.'})
       } else {
+        student = grade(student);
         resolve(student);
       }
     });
@@ -107,19 +109,48 @@ exports.delete = function(id){
 };
 
 exports.getTotals = function(){
-  return new Promise((resolve, reject)=>{
-    let sql = select sum(total), sum(score) as Total, Score from student;
-
-    connection.query(sql, (err, students)=>{
-      if(err){
-        reject(err);
-      }else{
-        resolve(students);
-      }
-    });
-  });
+  return exports.getAll()
+                .then(students =>{
+                  console.log('here in getTotals')
+                  let total = students.reduce((obj, student)=>{
+                    obj.total_possible += student.total;
+                    obj.total_score += student.score;
+                    if(obj.grade[student.grade]){
+                      obj.grade[student.grade]++;
+                    }else{
+                      obj.grade[student.grade] = 1;
+                    }
+                    return obj;
+                  },{
+                    total_possible: 0,
+                    total_score: 0,
+                    grade: {}
+                  });
+                  return total;
+                })
+                .catch(err => {
+                  console.log('err:', err);
+                });
 };
 
 
+
+function grade(student){
+  let grade = (student.score / student.total) * 100;
+  let result
+  if(grade >= 90){
+    result = 'A';
+  }else if(grade >=80){
+    result = 'B';
+  }else if(grade >=70){
+    result = 'C';
+  }else if(grade >=60){
+    result = 'D';
+  }else{
+    result = 'F';
+  }
+  student.grade = result;
+  return student;
+}
 
 

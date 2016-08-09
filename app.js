@@ -7,7 +7,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser'); 
 const Student = require('./models/student');
-const students = require('./routes/students');
+const studentRoute = require('./routes/studentRoute');
 
 const app = express();
 
@@ -20,14 +20,16 @@ app.set('views','./views');
 
 app.use(express.static('public'));
 
-app.use('/', students);
-
-
+app.use('/studentRoute', studentRoute);
 
 app.get('/',(req, res, next)=>{
-  Student.getAll(function(err, data){
-    res.render('index', {title: "Message Board App", data});
-  });
+  Student.getAll()
+    .then(students => {
+      res.render('index', {title: "Message Board App",students});
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    })
 });
 
 

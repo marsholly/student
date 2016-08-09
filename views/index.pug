@@ -6,6 +6,7 @@ html(lang='en')
     script(src='https://code.jquery.com/jquery-3.1.0.min.js', integrity='sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=', crossorigin='anonymous')
     link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
     link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1", crossorigin="anonymous")
+    link(rel='stylesheet', type='text/css', href='style.css')
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
     script(src="main.js")
   body
@@ -23,6 +24,7 @@ html(lang='en')
                   th Name
                   th Total
                   th Score
+                  th Grade
                   th Edit
                   th Delete
               tbody#studentList
@@ -31,12 +33,21 @@ html(lang='en')
                     td.name= student.name
                     td.total= student.total
                     td.score= student.score
+                    td.grade= student.grade
                     td
                       button.btn.btn-warning.btn-xs.edit(type='button', data-toggle='modal', data-target='#editMsgModal', data-whatever='')
                         i.glyphicon.glyphicon-pencil
                     td
                       button.btn.btn-danger.btn-xs.delete
                         i.glyphicon.glyphicon-trash
+              div
+                  tr.success
+                    td.totals TOTAL
+                    td.sumTotal
+                    td.sumScore
+                    td.sumGrade
+                    td
+                    td      
     // add new message
     #messageModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel')
       .modal-dialog(role='document')
@@ -51,14 +62,14 @@ html(lang='en')
                 label.control-label(for='recipient-name') Name:
                 input.name.form-control(type='text')
               .form-group
-                label.control-label(for='message-text') Total:
-                textarea.message-text.form-control
+                label.control-label(for='recipient-name') Total:
+                input.total.form-control(type='text')
               .form-group
-                label.control-label(for='message-text') Score:
-                textarea.message-text.form-control
+                label.control-label(for='recipient-name') Score:
+                input.score.form-control(type='text')
             .modal-footer
               button#newClose.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary.sendMsg(type='button') Send
+              button.btn.btn-primary.sendMsg(type='button') Save
 
     // edit message
     #editMsgModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel')
@@ -74,11 +85,11 @@ html(lang='en')
                 label.control-label(for='recipient-name') Name:
                 input.name.form-control(type='text')
               .form-group
-                label.control-label(for='message-text') Total:
-                textarea.message-text.form-control
+                label.control-label(for='recipient-name') Total:
+                input.total.form-control(type='text')
               .form-group
-                label.control-label(for='message-text') Score:
-                textarea.message-text.form-control    
+                label.control-label(for='recipient-name') Score:
+                input.score.form-control(type='text')
             .modal-footer
               button#editClose.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary.sendEditMsg(type='button') Edit Message
@@ -89,6 +100,7 @@ html(lang='en')
       td.name
       td.total
       td.score
+      td.grade
       td
         button.btn.btn-warning.btn-xs.edit(type='button', data-toggle='modal', data-target='#editMsgModal', data-whatever='')
           i.glyphicon.glyphicon-pencil
